@@ -1,6 +1,37 @@
-// import axios from "axios";
+import { Routes, Route } from "react-router-dom";
+import { Suspense, lazy } from "react";
+import Navigation from "./components/Navigation/Navigation.jsx";
+import Loader from "./components/Loader/Loader.jsx";
+import "./App.css";
 
-// const TOKEN_API =
-//   "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzMTQ2Yzc3N2Q3YWMxNmEyNDY0NDk5MTVjZjAwYjI4NSIsIm5iZiI6MTY4NDQwODI1NS4zNTksInN1YiI6IjY0NjYwN2JmMmJjZjY3MDE1NTgxNzRkZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.vEPee7gpb9vsINVjqjubsHxTwSrgW-HsKIlEljQ2Szo";
+const HomePage = lazy(() => import("./pages/HomePage/HomePage"));
+const MoviesPage = lazy(() => import("./pages/MoviesPage/MoviesPage"));
+const MovieDetailsPage = lazy(() =>
+  import("./pages/MovieDetailsPage/MovieDetailsPage")
+);
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage"));
+const MovieCast = lazy(() => import("./components/MovieCast/MovieCast.jsx"));
+const MovieReviews = lazy(() =>
+  import("./components/MovieReviews/MovieReviews.jsx")
+);
 
-// export async function FetchTrendMowies() {}
+const App = () => {
+  return (
+    <>
+      <Navigation />
+      <Suspense fallback={<Loader />}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/movies" element={<MoviesPage />} />
+          <Route path="/movies/:movieId" element={<MovieDetailsPage />}>
+            <Route path="cast" element={<MovieCast />} />
+            <Route path="reviews" element={<MovieReviews />} />
+          </Route>
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Suspense>
+    </>
+  );
+};
+
+export default App;
