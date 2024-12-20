@@ -1,0 +1,17 @@
+.movieList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.movieItem {
+  overflow: hidden;
+  text-align: center;
+  transition: transform 0.3s;
+  border-radius: 20px;
+  border: 1px solid black;
+}
+
+.movieItem:hover {
+  transform: scale(1.05);
+}
