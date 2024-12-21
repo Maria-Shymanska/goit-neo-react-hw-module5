@@ -11,40 +11,41 @@ import Pagination from "../../components/Pagination/Pagination.jsx";
 
 const HomePage = () => {
   const [movies, setMovies] = useState([]);
-  const [totalPages, setTotalPages] = useState(0);
+  const [ttlPages, setTtlPage] = useState(0);
 
   const savedPage = JSON.parse(sessionStorage.getItem("page")) || 1;
 
-  const { currentPage, onNextPage, onPrevPage } = usePagination(
+  const { curPage, handleNextPage, handlePrevPage } = usePagination(
     savedPage,
-    totalPages
+    ttlPages
   );
 
-  const url = `https://api.themoviedb.org/3/trending/movie/day?language=en-US&page=${currentPage}`;
+  const url = `https://api.themoviedb.org/3/trending/movie/day?language=en-US&page=${curPage}`;
 
   useEffect(() => {
     const fetchMovies = async () => {
       try {
         const response = await axios.get(url, getApiOptions);
         setMovies(response.data.results);
-        setTotalPages(response.data.total_pages);
+        setTtlPage(response.data.total_pages);
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchMovies();
-  }, [currentPage]);
+  }, [curPage, url]);
+  console.log(curPage);
 
   return (
     <section className="section">
       <h1 className={css.homeTitle}>Trending Movies</h1>
       <MovieList movies={movies} />
       <Pagination
-        currentPage={currentPage}
-        onNextPage={onNextPage}
-        onPrevPage={onPrevPage}
-        totalPages={totalPages}
+        curPage={curPage}
+        handleNextPage={handleNextPage}
+        handlePrevPage={handlePrevPage}
+        ttlPages={ttlPages}
       />
     </section>
   );

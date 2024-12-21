@@ -6,13 +6,16 @@ const MoviesPage = lazy(() => import("./pages/MoviesPage/MoviesPage.jsx"));
 const MovieDetailsPage = lazy(() =>
   import("./pages/MovieDetailsPage/MovieDetailsPage.jsx")
 );
+// import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary.jsx";
 
 const Navigation = lazy(() => import("./components/Navigation/Navigation.jsx"));
 const MovieCast = lazy(() => import("./components/MovieCast/MovieCast.jsx"));
 const MovieReviews = lazy(() =>
   import("./components/MovieReviews/MovieReviews.jsx")
 );
-const NotFound = lazy(() => import("./pages/NotFoundPage/NotFoundPage.jsx"));
+const NotFoundPage = lazy(() =>
+  import("./pages/NotFoundPage/NotFoundPage.jsx")
+);
 
 function App() {
   return (
@@ -26,7 +29,7 @@ function App() {
             <Route path="cast" element={<MovieCast />} />
             <Route path="reviews" element={<MovieReviews />} />
           </Route>
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
     </>

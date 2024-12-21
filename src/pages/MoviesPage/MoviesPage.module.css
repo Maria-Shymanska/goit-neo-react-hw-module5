@@ -1,0 +1,40 @@
+.homeTitle {
+  font-size: 46px;
+  text-align: center;
+}
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+}
+
+.input {
+  padding: 10px;
+  border: 2px solid orange;
+  border-radius: 5px;
+  font-size: 16px;
+  width: 300px;
+  transition: border-color 0.3s;
+}
+
+.input:focus {
+  border-color: darkorange;
+  outline: none;
+}
+
+.button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: orangered;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.button:hover {
+  background-color: darkorange;
+}
