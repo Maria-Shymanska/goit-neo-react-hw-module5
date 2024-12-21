@@ -1,134 +1,121 @@
-import axios from "axios";
-import { Suspense, useEffect, useRef, useState } from "react";
-import { Link, Outlet, useLocation, useParams } from "react-router-dom";
-import getApiOptions from "../../Api/ApiConfig.jsx";
-
+import { useState, useEffect, Suspense } from "react";
+import {
+  useParams,
+  Link,
+  Outlet,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+import { getMovieDetails } from "../../Api/apiMovie.js";
 import css from "./MovieDetailsPage.module.css";
+import { FaCaretRight, FaRegClock, FaAngleRight } from "react-icons/fa";
+import Videos from "../../components/Video/Video";
 
-import placeHolderImg from "../../assets/images/placeHolderImg.jpg";
-import { BackLink } from "../../components/BackLink/BackLink.jsx";
-
-const MovieDetailsPage = () => {
+function MovieDetailsPage() {
+  const [movie, setMovieDetails] = useState([]);
+  const [showVideo, setShowVideo] = useState(false);
   const { movieId } = useParams();
-  const [movie, setMovie] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const url = `https://api.themoviedb.org/3/movie/${movieId}`;
-  const imgBaseUrl = "https://image.tmdb.org/t/p/";
   const location = useLocation();
-  const backLinkHref = location.state?.from || "/movies";
-  const backSearch = location.state?.search || "";
-  const fullBackLink = backSearch
-    ? `${backLinkHref}${backSearch}`
-    : backLinkHref;
-  const castRef = useRef(null);
-  const reviewsRef = useRef(null);
+  const navigate = useNavigate();
+
+  const backLink = location.state?.from ?? "/movies";
+  const query = location.state?.query || "";
+  const results = location.state?.results || [];
+
   useEffect(() => {
-    const fetchMovies = async () => {
-      setLoading(true);
+    if (!movieId) return;
+
+    const fetchMovieDetails = async (id) => {
       try {
-        const response = await axios.get(url, getApiOptions);
-        setMovie(response.data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
+        const data = await getMovieDetails(id);
+        setMovieDetails(data);
+      } catch {
+        console.error("Failed to fetch movie details. Please try again later.");
       }
     };
 
-    fetchMovies();
-  }, [url]);
+    fetchMovieDetails(movieId);
+  }, [movieId]);
 
-  const scrollToSection = (ref) => {
-    if (ref.current) {
-      setTimeout(() => {
-        ref.current.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 250);
-    }
+  if (!movie) return <p>Loading...</p>;
+
+  const handleVideoClick = () => {
+    setShowVideo(true);
   };
-  if (loading) {
-    return <div>Loading movie details...</div>;
-  }
-
-  if (!movie) {
-    return <div>No movie found.</div>;
-  }
 
   return (
-    <section className="section">
-      <div className="container">
-        <h1 className={css.ttl}>{movie.title}</h1>
-        <BackLink to={fullBackLink}>Back to movies</BackLink>
-        <div className={css.movieDetails}>
-          <picture>
-            <source
-              media="(max-width: 768px)"
-              srcSet={`${imgBaseUrl}w300${movie.poster_path}`}
-            />
-            <source
-              media="(min-width: 769px)"
-              srcSet={`${imgBaseUrl}w400${movie.poster_path}`}
-            />
-            <img
-              className={css.image}
-              src={
-                movie.poster_path
-                  ? `${imgBaseUrl}w500${movie.poster_path}`
-                  : placeHolderImg
-              }
-              alt={movie.title || "Movie Poster"}
-            />
-          </picture>
-          <div className={css.addDetails}>
-            <div>
-              <h2 className={css.subTtl}>Description</h2>
-              <p>{movie.overview}</p>
+    <div className={css.movieDetailsContainer}>
+      <button onClick={() => navigate(backLink, { state: { query, results } })}>
+        Go back
+      </button>
+
+      {movie ? (
+        <>
+          <div className={css.detailsContent}>
+            <div className={css.imageContainer}>
+              <img
+                src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                alt={movie.title}
+                className={css.movieImage}
+              />
             </div>
-            <div>
-              <h2 className={css.subTtl}>Genres</h2>
-              <p>
-                {movie.genres && movie.genres.length > 0
-                  ? movie.genres.map((genre) => genre.name).join(", ")
-                  : "No genres available"}
-              </p>
-            </div>
-            <div>
-              <h2 className={css.subTtl}>Popularity</h2>
-              <p>{movie.popularity}</p>
-            </div>
-            <div>
-              <h2 className={css.subTtl}>Rating</h2>
-              <p>{movie.vote_average}</p>
+
+            <div className={css.infoContainer}>
+              <h1>{movie.title}</h1>
+              <h2>Overview</h2>
+              <p className={css.overviewP}>{movie.overview}</p>
+
+              <h3 className={css.genres}>Genres</h3>
+              <div className={css.genreList}>
+                {movie.genres &&
+                  movie.genres.map((g) => (
+                    <span key={g.id} className={css.genreItem}>
+                      <FaCaretRight className={css.iconGenre} /> {g.name}
+                    </span>
+                  ))}
+              </div>
+
+              <h3>Duration</h3>
+              <div className={css.duration}>
+                <FaRegClock className={css.iconDuration} />
+                <span>{movie.runtime} min</span>
+              </div>
+
+              <button className={css.videoButton} onClick={handleVideoClick}>
+                Movie trailer
+              </button>
             </div>
           </div>
-        </div>
-        <ul className={css.infoList}>
-          <li className={css.infoItem} ref={castRef}>
-            <Link
-              to="cast"
-              state={{ from: fullBackLink }}
-              className={css.link}
-              onClick={() => scrollToSection(castRef)}
-            >
-              Actors
-            </Link>
-          </li>
-          <li className={css.infoItem} ref={reviewsRef}>
-            <Link
-              to="reviews"
-              state={{ from: fullBackLink }}
-              className={css.link}
-              onClick={() => scrollToSection(reviewsRef)}
-            >
-              Reviews
-            </Link>
-          </li>
-        </ul>
-        <Suspense fallback={<div>Loading subpage...</div>}>
-          <Outlet />
-        </Suspense>
-      </div>
-    </section>
+
+          {showVideo && <Videos movieId={movieId} />}
+
+          <div className={css.additionalInfo}>
+            <h3>Additional information</h3>
+            <ul>
+              <li>
+                <FaAngleRight className={css.iconInfo} />
+                <Link to="cast" state={{ from: backLink }}>
+                  Cast
+                </Link>
+              </li>
+              <li>
+                <FaAngleRight className={css.iconInfo} />
+                <Link to="reviews" state={{ from: backLink }}>
+                  Reviews
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <Suspense fallback={<div>Loading additional info...</div>}>
+            <Outlet />
+          </Suspense>
+        </>
+      ) : (
+        <div>Loading movie details...</div>
+      )}
+    </div>
   );
-};
+}
 
 export default MovieDetailsPage;

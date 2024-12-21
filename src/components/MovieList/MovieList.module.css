@@ -1,17 +1,78 @@
-.movieList {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
-.movieItem {
-  overflow: hidden;
-  text-align: center;
-  transition: transform 0.3s;
-  border-radius: 20px;
-  border: 1px solid black;
+.item img {
+  width: 150px;
+  height: auto;
+  border-radius: 5px;
+  margin-right: 15px;
+  transition: all 0.3s ease;
 }
-
-.movieItem:hover {
+.item img:hover {
   transform: scale(1.05);
+}
+
+.item img::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.5),
+    rgba(0, 0, 0, 0.7)
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 5px;
+  z-index: 1;
+}
+
+.item img:hover::after {
+  opacity: 1;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 5px 0;
+  color: #3d3d3d;
+}
+.title:hover {
+  color: black;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.meta svg {
+  width: 18px;
+  height: 18px;
+  color: #ffc107;
+}
+
+.meta p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
 }

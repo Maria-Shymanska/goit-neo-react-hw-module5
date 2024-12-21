@@ -1,54 +1,50 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import getApiOptions from "../../Api/ApiConfig.jsx";
-
-import usePagination from "../../utils/usePagination.js";
-
+import { useState, useEffect } from "react";
+import { getMoviesList } from "../../Api/apiMovie.js";
+import MovieList from "../../components/MovieList/MovieList";
+import Loader from "../../components/Loader/Loader";
 import css from "./HomePage.module.css";
 
-import MovieList from "../../components/MovieList/MovieList.jsx";
-import Pagination from "../../components/Pagination/Pagination.jsx";
-
-const HomePage = () => {
+function HomePage() {
   const [movies, setMovies] = useState([]);
-  const [ttlPages, setTtlPage] = useState(0);
-
-  const savedPage = JSON.parse(sessionStorage.getItem("page")) || 1;
-
-  const { curPage, handleNextPage, handlePrevPage } = usePagination(
-    savedPage,
-    ttlPages
-  );
-
-  const url = `https://api.themoviedb.org/3/trending/movie/day?language=en-US&page=${curPage}`;
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const fetchMovies = async () => {
+    const fetchMoviesList = async () => {
+      setIsLoading(true);
       try {
-        const response = await axios.get(url, getApiOptions);
-        setMovies(response.data.results);
-        setTtlPage(response.data.total_pages);
+        const data = await getMoviesList();
+        if (data && data.results) {
+          setMovies(data.results);
+          console.log("Movies:", data.results);
+        } else {
+          console.warn("No results found in API response:", data);
+        }
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching movies:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchMovies();
-  }, [curPage, url]);
-  console.log(curPage);
+    fetchMoviesList();
+  }, []);
 
   return (
-    <section className="section">
-      <h1 className={css.homeTitle}>Trending Movies</h1>
-      <MovieList movies={movies} />
-      <Pagination
-        curPage={curPage}
-        handleNextPage={handleNextPage}
-        handlePrevPage={handlePrevPage}
-        ttlPages={ttlPages}
-      />
-    </section>
+    <div className={css.homePage}>
+      <h1 className={css.today}>Trending today</h1>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <ul>
+          {movies.length > 0 ? (
+            <MovieList movies={movies} />
+          ) : (
+            <p>No movies available.</p>
+          )}
+        </ul>
+      )}
+    </div>
   );
-};
+}
 
 export default HomePage;

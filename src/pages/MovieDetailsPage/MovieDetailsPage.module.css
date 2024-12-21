@@ -1,0 +1,128 @@
+.movieDetailsContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.detailsContent {
+  display: flex;
+  padding: 20px;
+  gap: 20px; /* Простір між фото та інформацією */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: rgb(250, 245, 245);
+}
+
+.imageContainer {
+  flex: 1;
+  max-width: 400px; /* Обмеження для фото */
+}
+
+.movieImage {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.infoContainer {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.additionalInfo {
+  margin-top: 20px;
+}
+
+button {
+  width: fit-content;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #a4496d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+button:hover {
+  background-color: #893e5c;
+}
+
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 32px;
+  font-weight: bold;
+  margin: 0;
+}
+
+h2 {
+  font-size: 24px;
+  color: #444;
+  margin: 0;
+}
+
+.genres {
+  display: flex;
+  font-size: 20px;
+  color: #333;
+  margin: 0;
+  flex-direction: row;
+}
+.genreList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.genreItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 16px;
+  color: #333;
+}
+
+.iconGenre {
+  color: #a4496d;
+  font-size: 14px;
+}
+
+.iconInfo {
+  margin-right: 8px;
+  color: #a4496d;
+}
+
+.duration {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 16px;
+  color: #333;
+}
+
+.iconDuration {
+  color: #a4496d;
+  font-size: 18px;
+}
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+.additionalInfo li a {
+  color: #a4496d;
+  text-decoration: none;
+}
+
+.additionalInfo li a:hover {
+  text-decoration: none;
+  color: #444;
+}
