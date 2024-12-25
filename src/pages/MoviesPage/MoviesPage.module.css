@@ -1,40 +1,75 @@
-.homeTitle {
-  font-size: 46px;
-  text-align: center;
+body {
+  display: block;
 }
-
 .formContainer {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+.form {
   align-items: center;
-  margin: 20px;
+  justify-content: flex-start;
+  width: 100%;
 }
 
-.input {
+.inputSearch {
   padding: 10px;
-  border: 2px solid orange;
-  border-radius: 5px;
   font-size: 16px;
-  width: 300px;
-  transition: border-color 0.3s;
-}
-
-.input:focus {
-  border-color: darkorange;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 10px;
+  width: 200px;
   outline: none;
 }
 
-.button {
-  margin-top: 10px;
+.inputSearch:hover {
+  border-color: #893e5c;
+}
+
+.buttonSearch {
   padding: 10px 20px;
-  background-color: orangered;
+  font-size: 16px;
+  background-color: #a4496d;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  margin: 0;
 }
 
-.button:hover {
-  background-color: darkorange;
+.buttonSearch:hover {
+  background-color: #893e5c;
+}
+
+.moviesList {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.moviesList li {
+  margin: 10px 0;
+}
+
+.moviesList li a {
+  text-decoration: none;
+  color: #333;
+  font-size: 18px;
+}
+
+.moviesList li a:hover {
+  color: #a4496d;
+}
+
+.iconMovieList {
+  color: #a4496d;
+  font-size: 14px;
+}
+
+.noResults {
+  font-size: 18px;
+  color: #777;
+  text-align: center;
 }

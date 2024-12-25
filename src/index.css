@@ -1,5 +1,6 @@
-@import "reset-css";
-@import "modern-normalize/modern-normalize.css";
+ul {
+  list-style: none;
+}
 
 a {
   text-decoration-line: none;

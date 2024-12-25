@@ -1,1 +1,19 @@
+.homePage {
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+}
 
+ul {
+  list-style: none;
+}
+
+h1 {
+  font-size: 35px;
+  font-weight: bold;
+  text-align: center;
+  margin: 0;
+}

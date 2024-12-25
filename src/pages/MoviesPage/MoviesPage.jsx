@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Formik, Field, Form } from "formik";
+import * as Yup from "yup";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -19,36 +20,10 @@ function MoviesPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(!!location.state?.query);
 
-  const notify = () => {
-    MySwal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "The search query must be at least 2 characters long",
-      didOpen: () => {
-        const confirmButton = MySwal.getConfirmButton();
-        confirmButton.style.backgroundColor = "#a4496d";
-        confirmButton.style.color = "white";
-        confirmButton.style.borderRadius = "5px";
-        confirmButton.style.padding = "10px 20px";
-      },
-    });
-  };
-
-  const handleSubmit = (values, actions) => {
-    const query = values.query.trim().toLowerCase();
-    if (query.length < 2) {
-      notify();
-    } else {
-      setSearchQuery(query);
-      setHasSearched(true);
-      actions.resetForm();
-    }
-  };
-
   useEffect(() => {
-    if (!searchQuery) return;
-
     const fetchMovies = async () => {
+      if (!searchQuery) return;
+
       setIsLoading(true);
       try {
         const data = await searchMovie(searchQuery);
@@ -70,20 +45,42 @@ function MoviesPage() {
     fetchMovies();
   }, [searchQuery, navigate]);
 
+  const validationSchema = Yup.object().shape({
+    query: Yup.string()
+      .trim()
+      .min(2, "Search query must be at least 2 characters long")
+      .required("Search query is required"),
+  });
+
+  const handleSubmit = (values, { resetForm }) => {
+    setSearchQuery(values.query.trim().toLowerCase());
+    setHasSearched(true);
+    resetForm();
+  };
+
   return (
     <div className={css.formContainer}>
-      <Formik initialValues={{ query: "" }} onSubmit={handleSubmit}>
-        <Form className={css.form}>
-          <Field
-            className={css.inputSearch}
-            name="query"
-            type="text"
-            placeholder="Search movies"
-          />
-          <button className={css.buttonSearch} type="submit">
-            Search
-          </button>
-        </Form>
+      <Formik
+        initialValues={{ query: "" }}
+        onSubmit={handleSubmit}
+        validationSchema={validationSchema}
+      >
+        {({ errors, touched }) => (
+          <Form className={css.form}>
+            <Field
+              className={css.inputSearch}
+              name="query"
+              type="text"
+              placeholder="Search movies"
+            />
+            {errors.query && touched.query && (
+              <p className={css.errorText}>{errors.query}</p>
+            )}
+            <button className={css.buttonSearch} type="submit">
+              Search
+            </button>
+          </Form>
+        )}
       </Formik>
 
       <ul className={css.moviesList}>
