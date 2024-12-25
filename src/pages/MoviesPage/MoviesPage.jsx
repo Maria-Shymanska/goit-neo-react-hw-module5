@@ -1,36 +1,33 @@
 import { useState, useEffect } from "react";
 import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { FaCaretRight } from "react-icons/fa";
+import MovieList from "../../components/MovieList/MovieList.jsx";
+
 import { searchMovie } from "../../Api/apiMovie.js";
 import css from "./MoviesPage.module.css";
 import Loader from "../../components/Loader/Loader";
 
 function MoviesPage() {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const queryParam = searchParams.get("query") || "";
+  const [searchQuery, setSearchQuery] = useState(queryParam);
+  const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasSearched, setHasSearched] = useState(!!queryParam);
 
   const MySwal = withReactContent(Swal);
 
-  const [searchQuery, setSearchQuery] = useState(location.state?.query || "");
-  const [movies, setMovies] = useState(location.state?.results || []);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasSearched, setHasSearched] = useState(!!location.state?.query);
-
   useEffect(() => {
     const fetchMovies = async () => {
-      if (!searchQuery) return;
+      if (!queryParam) return;
 
       setIsLoading(true);
       try {
-        const data = await searchMovie(searchQuery);
+        const data = await searchMovie(queryParam);
         setMovies(data.results);
-        navigate("/movies", {
-          state: { query: searchQuery, results: data.results },
-        });
       } catch {
         MySwal.fire({
           icon: "error",
@@ -43,7 +40,7 @@ function MoviesPage() {
     };
 
     fetchMovies();
-  }, [searchQuery, navigate]);
+  }, [queryParam]);
 
   const validationSchema = Yup.object().shape({
     query: Yup.string()
@@ -53,7 +50,9 @@ function MoviesPage() {
   });
 
   const handleSubmit = (values, { resetForm }) => {
-    setSearchQuery(values.query.trim().toLowerCase());
+    const query = values.query.trim().toLowerCase();
+    setSearchQuery(query);
+    setSearchParams({ query });
     setHasSearched(true);
     resetForm();
   };
@@ -83,25 +82,13 @@ function MoviesPage() {
         )}
       </Formik>
 
-      <ul className={css.moviesList}>
-        {isLoading ? (
-          <Loader />
-        ) : movies.length > 0 ? (
-          movies.map((movie) => (
-            <li key={movie.id}>
-              <FaCaretRight className={css.iconMovieList} />
-              <Link
-                to={`/movies/${movie.id}`}
-                state={{ query: searchQuery, results: movies }}
-              >
-                {movie.title}
-              </Link>
-            </li>
-          ))
-        ) : (
-          hasSearched && <p className={css.noResults}>No movies found</p>
-        )}
-      </ul>
+      {isLoading ? (
+        <Loader />
+      ) : movies.length > 0 ? (
+        <MovieList movies={movies} searchQuery={searchQuery} />
+      ) : (
+        hasSearched && <p className={css.noResults}>No movies found</p>
+      )}
     </div>
   );
 }

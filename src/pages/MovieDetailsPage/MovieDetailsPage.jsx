@@ -1,4 +1,4 @@
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import {
   useParams,
   Link,
@@ -18,7 +18,9 @@ function MovieDetailsPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const backLink = location.state?.from ?? "/movies";
+  // Використання useRef для збереження початкового стану location.state
+  const backLinkRef = useRef(location.state?.from ?? "/movies");
+
   const query = location.state?.query || "";
   const results = location.state?.results || [];
 
@@ -45,7 +47,11 @@ function MovieDetailsPage() {
 
   return (
     <div className={css.movieDetailsContainer}>
-      <button onClick={() => navigate(backLink, { state: { query, results } })}>
+      <button
+        onClick={() =>
+          navigate(backLinkRef.current, { state: { query, results } })
+        }
+      >
         Go back
       </button>
 
@@ -94,13 +100,13 @@ function MovieDetailsPage() {
             <ul>
               <li>
                 <FaAngleRight className={css.iconInfo} />
-                <Link to="cast" state={{ from: backLink }}>
+                <Link to="cast" state={{ from: backLinkRef.current }}>
                   Cast
                 </Link>
               </li>
               <li>
                 <FaAngleRight className={css.iconInfo} />
-                <Link to="reviews" state={{ from: backLink }}>
+                <Link to="reviews" state={{ from: backLinkRef.current }}>
                   Reviews
                 </Link>
               </li>
